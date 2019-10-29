@@ -4,7 +4,7 @@
  * @Author: yanyingxu
  * @Date: 2019-10-29 20:48:02
  * @LastEditors: yanyingxu
- * @LastEditTime: 2019-10-30 03:04:15
+ * @LastEditTime: 2019-10-30 03:35:31
  */
 const Koa = require('koa');
 const Router = require('koa-router')
@@ -64,13 +64,16 @@ router.post('/user', async (ctx) => {
     let { body } = ctx.request
     console.log(body);
     console.log(ctx.request);
-    // name:'imoocxyy',age:'22',email:'imoocxyy@imooc.com'
     let name = body.name
     let email = body.email
     let role = ctx.request.header.role
-    if (name && email) {
-        if (role == 'admin') {
-            // ctx.body = { ...body }
+    if (!role || role != 'admin') {
+        ctx.body = {
+            code: 401,
+            msg: 'unauthorize posr'
+        }
+    } else {
+        if (name && email) {
             ctx.body = {
                 code: 200,
                 data: body,
@@ -78,14 +81,9 @@ router.post('/user', async (ctx) => {
             }
         } else {
             ctx.body = {
-                code: 401,
-                msg: 'unauthorize posr'
+                code: 404,
+                msg: 'name与email不得为空'
             }
-        }
-    } else {
-        ctx.body = {
-            code: 404,
-            msg: 'name与email不得为空'
         }
     }
 
